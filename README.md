@@ -5,7 +5,7 @@
     及redis/postgres/mongo/etcd/rabbitMQ/emq
     的具體使用案例。
   github.com/vhaoran/goStudy.git
-    这里有基本的go学习demo,全其它一些觉类库的使用
+    这里有基本的go学习demo,及其它一些常见类库的使用
 
 # 主要练习内容
   ## 基础语法部分

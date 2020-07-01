@@ -26,7 +26,7 @@ func Test_panic(t *testing.T) {
 }
 
 func Test_defer(t *testing.T) {
-	err := f()
+	err := f(5)
 	if err != nil {
 		fmt.Println("err_test->", err)
 	}
@@ -34,7 +34,7 @@ func Test_defer(t *testing.T) {
 	fmt.Println("-----good this pos------------")
 }
 
-func f() (er1 error) {
+func f(i int) (er1 error) {
 	defer func() {
 		if err := recover(); err != nil {
 			fmt.Println("#########", err)

@@ -18,7 +18,7 @@ func Test_int(t *testing.T) {
 	e := int32(40)
 	fmt.Println("---", b, "---", a, c, d, e)
 	fmt.Println("输出测试")
-
+	fmt.Println("123")
 }
 
 func Test_string(t *testing.T) {

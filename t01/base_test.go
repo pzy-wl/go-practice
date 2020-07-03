@@ -21,6 +21,7 @@ func Test_int(t *testing.T) {
 	fmt.Println("123")
 	println("456")
 	println("789")
+	println("测试")
 }
 
 func Test_string(t *testing.T) {

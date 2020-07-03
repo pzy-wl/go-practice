@@ -22,8 +22,12 @@ func Test_int(t *testing.T) {
 	println("456")
 	println("789")
 	println("测试")
+<<<<<<< HEAD
 	println("测试2")
 	
+=======
+	println("测试3")
+>>>>>>> 4635cb0a406bb726ba5a965653da4e9116bf0df2
 }
 
 func Test_string(t *testing.T) {

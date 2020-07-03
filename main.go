@@ -6,7 +6,7 @@ import(
 
 func main(){
   fmt.Println("hello world")
-  fmt.priintln("输出测试")
+  fmt.println("输出测试")
 
 
 }

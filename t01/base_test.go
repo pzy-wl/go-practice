@@ -23,6 +23,7 @@ func Test_int(t *testing.T) {
 	println("789")
 	println("测试")
 	println("测试2")
+	
 }
 
 func Test_string(t *testing.T) {

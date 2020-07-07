@@ -13,7 +13,7 @@
     case float,float64:
       fmt.println("int32")
   }
-  ## slive使用
+  ## slice使用
   l := make([]int,0)
   l = append(l,3,4,5)
   for i,v :- range l{

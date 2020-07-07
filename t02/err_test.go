@@ -9,14 +9,13 @@ import (
 
 func Test_err_1(t *testing.T) {
 	//
-	i, err := strconv.ParseFloat("aaaa", 64)
-
-	//
+	s1 := "0.123456"
+	i, err := strconv.ParseFloat(s1, 64)
+	fmt.Println(err)
 	if err != nil {
 		fmt.Println("-----------------", i)
 		fmt.Println("-----------------", err)
 	}
-
 	s := err.Error()
 	fmt.Println("-----------------", s)
 }

@@ -38,7 +38,6 @@ func Test_web1(t *testing.T) {
 	//相当配置java controller中的request maping
 	http.HandleFunc("/hello", responseHello)
 	http.HandleFunc("/test", test)
-	//http.HandleFunc("www.baidu.com", responseHello)
 	//设置监听的端口，开始监听
 	errInfo := http.ListenAndServe(":8080", nil)
 	if errInfo != nil {

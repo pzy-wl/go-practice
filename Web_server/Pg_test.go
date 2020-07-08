@@ -152,7 +152,8 @@ func del(num int) {
 }
 func checkErr(err error) {
 	if err != nil {
-		panic(err)
+		fmt.Println("过程出错!")
+		//panic(err)
 	}
 }
 func Test_outputDate(t *testing.T) {

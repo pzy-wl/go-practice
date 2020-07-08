@@ -11,13 +11,13 @@ import (
 
 func Test_pg1(t *testing.T) {
 	/*插入*/
-	//insert("panzhenying","研发", time.Now() )
+	insert("梁振", "销售", time.Now())
 	/*更新*/
 	//	update("lizhihao", 16)
 	/*删除id小于13的所有的用户信息*/
-	del(13)
+	//del(13)
 	//检索
-	selectAll()
+	//selectAll()
 	//db, err := sql.Open("postgres", "user=postgres password=123456 dbname=test sslmode=disable")
 	//checkErr(err)
 	//// 插入数据
@@ -88,7 +88,7 @@ func insert(name string, de string, day time.Time) {
 	stmt, err := db.Prepare("INSERT INTO userinfo(username,department,created) VALUES($1,$2,$3) RETURNING uid")
 	checkErr(err)
 
-	res, err := stmt.Exec("panzhenying123123", "开发岗位", time.Now())
+	res, err := stmt.Exec(name, de, time.Now())
 	checkErr(err)
 	println(res)
 	fmt.Println("----------insert done------------")

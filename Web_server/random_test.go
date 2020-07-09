@@ -26,10 +26,10 @@ func init() {
 }
 
 func GetRandomName() (name string) {
-	familiyName := familiyNames[GetRandomInt(0, len(familiyNames)-1)]
-	middleName := generationNameMap[familiyName][GetRandomInt(0, len(generationNameMap[familiyName])-1)]
+	familyName := familiyNames[GetRandomInt(0, len(familiyNames)-1)]
+	middleName := generationNameMap[familyName][GetRandomInt(0, len(generationNameMap[familyName])-1)]
 	firstName := firstNames[GetRandomInt(0, len(firstNames)-1)]
-	return familiyName + middleName + firstName
+	return familyName + middleName + firstName
 }
 
 //生成随机数

@@ -11,6 +11,10 @@ import (
 
 var db = newDB()
 
+//todo
+// to gorm
+// to ypg.X
+
 type (
 	Abc struct {
 		Id   int64
@@ -115,7 +119,13 @@ func (r *AbcDao) Rm(id int64) error {
 
 	defer db.Close()
 	bean := &Abc{Id: 13}
-	db.Delete(bean)
+	ret := db.Delete(bean)
+
+	//if err := ypg.DBErr(ret); err != nil {
+	//	ylog.Debug("--------shopUserDao.go-->Exist  err----", err)
+	//	return err
+	//}
+
 	return nil
 }
 

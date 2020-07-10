@@ -5,10 +5,26 @@ import (
 	"log"
 	"testing"
 
-	"github.com/vhaoran/vchat/common/ypage"
+	"github.com/vhaoran/vchat/lib"
 )
 
 var a = new(AbcDao)
+
+func init() {
+	_, err := lib.InitModulesOfOptions(&lib.LoadOption{
+		LoadMicroService: false,
+		LoadEtcd:         false,
+		LoadPg:           true,
+		LoadRedis:        false,
+		LoadMongo:        false,
+		LoadMq:           false,
+		LoadRabbitMq:     true,
+		LoadJwt:          false,
+	})
+	if err != nil {
+		panic(err.Error())
+	}
+}
 
 func Test_Dao(t *testing.T) {
 	//此处相当于service层

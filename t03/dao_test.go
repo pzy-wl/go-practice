@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"log"
 	"testing"
-
-	"github.com/vhaoran/vchat/common/ypage"
 )
 
 var a = new(AbcDao)
@@ -57,5 +55,4 @@ func Test_list(t *testing.T) {
 }
 func Test_pg(t *testing.T) {
 
-	a.Page()
 }

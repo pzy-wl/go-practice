@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
 	"strings"
 	"testing"
 	"time"
@@ -144,20 +146,53 @@ func getJson(w http.ResponseWriter, r *http.Request) {
 		log.Println("key:", key, " => value :", value)
 	}
 }
+
+type myHandler struct{}
+
+func (_ *myHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	time.Sleep(3 * time.Second)
+	w.Write([]byte("hello, this is myHandle!, requestUrl is " + r.URL.String()))
+}
+
 func Test_web1(t *testing.T) {
+	//go1.8关闭服务器功能
+	quit := make(chan os.Signal)
+	signal.Notify(quit, os.Interrupt)
+	mux := http.NewServeMux()
+	server := &http.Server{
+		Addr:         ":8080",
+		WriteTimeout: 4 * time.Second,
+	}
+	server.Handler = mux
+	go func() {
+
+		<-quit
+		if err := server.Close(); err != nil {
+			log.Fatal("Close Server", err)
+		}
+	}()
+	//跟路由包含所有的未注册的路由
+	mux.Handle("/", &myHandler{})
 	//设置要解析的URL路由
 	//相当配置java controller中的request maping
-	http.HandleFunc("/hello", responseHello)
-	http.HandleFunc("/test", test)
-	http.HandleFunc("/listAll", listAll)
-	http.HandleFunc("/cmd", crubTest)
-	http.HandleFunc("/select", selectById)
-	http.HandleFunc("/testJson", getJson)
-	http.HandleFunc("/testJson2", getJson2)
+	mux.HandleFunc("/hello", responseHello)
+	mux.HandleFunc("/test", test)
+	mux.HandleFunc("/listAll", listAll)
+	mux.HandleFunc("/cmd", crubTest)
+	mux.HandleFunc("/select", selectById)
+	mux.HandleFunc("/testJson", getJson)
+	mux.HandleFunc("/testJson2", getJson2)
 	//设置监听的端口，开始监听
-	errInfo := http.ListenAndServe(":8080", nil)
+	errInfo := server.ListenAndServe()
+	//与上面的功能相同
+	//errInfo := http.ListenAndServe(":8080", mux)
 	if errInfo != nil {
-		log.Fatal("ListenAndServe: ", errInfo)
+		if errInfo == http.ErrServerClosed {
+			log.Println("Server closed under request!")
+		} else {
+			log.Fatal("server closed unexpect!")
+		}
 	}
+	log.Println("server exit!")
 
 }

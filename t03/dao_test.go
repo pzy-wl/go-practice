@@ -5,6 +5,7 @@ import (
 	"log"
 	"testing"
 
+	"github.com/vhaoran/vchat/common/ypage"
 	"github.com/vhaoran/vchat/lib"
 )
 
@@ -22,29 +23,27 @@ func init() {
 		LoadJwt:          false,
 	})
 	if err != nil {
-		panic(err.Error())
+		//panic(err.Error())
 	}
 }
 
-func Test_Dao(t *testing.T) {
+func Test_get(t *testing.T) {
 	//此处相当于service层
 	//根据id查找
-	abc, err := a.Get(13)
+	abc, err := a.Get(15)
 	if err != nil {
 		log.Println(err)
 	}
-	fmt.Println(&abc)
-	//添加记录
-	bean := &Abc{
-		Id:   13,
-		Name: "张三",
-		Age:  "13",
-	}
-	a.Insert(bean)
+	fmt.Println("查到的记录是:", abc)
 
 }
+func Test_ypg(t *testing.T) {
+	println("输出测试!")
+	//println(ypg.X.DB())
+	println("输出测试!")
+}
 func Test_auto1(t *testing.T) {
-	//先从redis数据库中查找,如果不存在则在postges中查找,并将其结果写入Redis(如果有)
+	//先从redis数据库中查找,如果不存在则在postgres中查找,并将其结果写入Redis(如果有)
 	abc, err := a.GetAuto(13)
 	if err != nil {
 		log.Println(err)
@@ -54,7 +53,7 @@ func Test_auto1(t *testing.T) {
 func Test_update(t *testing.T) {
 	bean1 := &Abc{
 		Id:   13,
-		Name: "李四",
+		Name: "李武",
 		Age:  "13",
 	}
 	a.Update(bean1)
@@ -63,15 +62,41 @@ func Test_del(t *testing.T) {
 	a.Rm(13)
 }
 func Test_list(t *testing.T) {
-	list, err := a.List("zhangsan")
+	//list, err := a.List("zhangsan")
+	list1, err := a.ListAll()
 	if err != nil {
 		log.Println(err)
 	}
-	for _, i := range list {
+	for _, i := range list1 {
 		fmt.Println(i)
 	}
 }
+func Test_insert(t *testing.T) {
+	//添加记录
+	bean := &Abc{
+		Id:   15,
+		Name: "张三",
+		Age:  "13",
+	}
+	a.Insert(bean)
+}
 func Test_pg(t *testing.T) {
-
-	a.Page()
+	pb := &ypage.PageBeanMap{
+		PageNo:      0,
+		RowsPerPage: 3,
+		PagesCount:  0,
+		RowsCount:   0,
+	}
+	pb, err := a.Page(pb)
+	if err != nil {
+		log.Println(err)
+	}
+	println("当前数据总条数有:", pb.RowsCount, "条")
+	println("当前数据总页数:", pb.PagesCount, "页")
+	data := pb.Data.([]*Abc)
+	for k, i := range data {
+		fmt.Printf("第 %d 条数据的id是 %dname是%sage %s 是\n", k+1, i.Id, i.Name, i.Age)
+	}
+	//r:=json.Unmarshal(pb.Data, &data)
+	println("查到的数据分别是", pb.Data)
 }

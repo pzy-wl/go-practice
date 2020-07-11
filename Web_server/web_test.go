@@ -3,6 +3,7 @@ package Web_server
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
@@ -14,6 +15,9 @@ import (
 
 var a = new(t03.AbcDao)
 
+func test(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "testing")
+}
 func responseHello(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()       // 解析参数，默认是不会解析的
 	fmt.Println(r.Form) // 这些信息是输出到服务器端的打印信息
@@ -67,6 +71,65 @@ func selectById(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(formData)
 }
+func getJson2(w http.ResponseWriter, r *http.Request) {
+	println("____________________进入getJson2________________")
+	jsonData, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Fatal("parse form error ", err)
+	}
+	// 初始化请求变量结构
+	var formData map[string]interface{} //interface{}
+	//结果与map[string]interface()结果是一样的
+	// 调用json包的解析，解析请求body
+	json.Unmarshal(jsonData, &formData)
+	//fmt.Println(formData)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	m := formData
+	for k, v := range m {
+		switch vv := v.(type) {
+		case string:
+			fmt.Println(k, "type: string\nvalue: ", vv)
+			fmt.Println("------------------")
+		case float64:
+			fmt.Println(k, "type: float64\nvalue: ", vv)
+			fmt.Println("------------------")
+		case bool:
+			fmt.Println(k, "type: bool\nvalue: ", vv)
+			fmt.Println("------------------")
+		case map[string]interface{}:
+			fmt.Println(k, "type: map[string]interface{}\nvalue: ", vv)
+			for i, j := range vv {
+				fmt.Println(i, ": ", j)
+			}
+			fmt.Println("------------------")
+		case []interface{}:
+			fmt.Println(k, "type: []interface{}\nvalue: ", vv)
+			for key, value := range vv {
+				fmt.Println(key, ": ", value)
+				//如果是嵌套结构,继续解码并输出
+				fmt.Println("检验是否有嵌套结构")
+				//*.(type)只能在switch语句中使用
+				switch vt := value.(type) {
+				case map[string]int:
+					for m, n := range vt {
+						fmt.Println(m, ": 123", n)
+					}
+				default:
+					fmt.Println(k, "type: nil\nvalue: ", vt)
+					fmt.Println("------------------")
+				}
+			}
+			fmt.Println("------------------")
+		default:
+			fmt.Println(k, "type: nil\nvalue: ", vv)
+			fmt.Println("------------------")
+		}
+	}
+}
+
 func getJson(w http.ResponseWriter, r *http.Request) {
 	println("____________________进入getJson________________")
 	err := r.ParseForm()
@@ -90,6 +153,7 @@ func Test_web1(t *testing.T) {
 	http.HandleFunc("/cmd", crubTest)
 	http.HandleFunc("/select", selectById)
 	http.HandleFunc("/testJson", getJson)
+	http.HandleFunc("/testJson2", getJson2)
 	//设置监听的端口，开始监听
 	errInfo := http.ListenAndServe(":8080", nil)
 	if errInfo != nil {

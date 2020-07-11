@@ -45,11 +45,11 @@ func newDB() *gorm.DB {
 }
 func (r *AbcDao) Get(id int64) (*Abc, error) {
 	//通过bean获取
-	var a1, a2 Abc
-	//last是按照主键查找最后一个,last是按照主键查找最后一个
-	db.Last(&a1)
-	fmt.Println(a1)
-	db.First(a2, "id=?", id)
+	var a2 Abc
+	//last是按照主键查找最后一个,last是按照主键查找最一个
+	db.First(&a2, "id=?", id)
+	//ypg.X.First(&a2, "id=?", id)
+	fmt.Println(a2)
 	return &a2, nil
 
 }
@@ -84,17 +84,18 @@ func (r *AbcDao) Insert(bean *Abc) (int64, error) {
 	defer db.Close()
 	//这个X是在哪定义的其内容?如何定义的内容?
 	//ypg.X.Save(bean)
-	db.Save(bean)
+	ret := db.Save(bean)
+	fmt.Printf("执行插入操作后,被影响%d行", ret.RowsAffected)
 	return 0, nil
 }
 
 func (r *AbcDao) GetAuto(id int64) (*Abc, error) {
 	//查询数据,先在redis进行查询,若是查不到,则进入posegres,并且将查询到的结果写入redis
 	//把每个数据库表当做一个hashtable, 表明为key, 字段名为filed
-	v, err := yredis.CacheAutoGetH(new(Abc), id,
+	v, err := yredis.CacheAutoGetH(new(Abc), "Id",
 		func() (interface{}, error) {
 			//回调函数
-			log.Println("redis-get:", id)
+			log.Println("redis-get:", "Id")
 			//如果在redis中获取失败,则转回常规方式(直接访问数据库)获取
 			return r.Get(id)
 		})
@@ -125,7 +126,7 @@ func (r *AbcDao) Rm(id int64) error {
 	//	ylog.Debug("--------shopUserDao.go-->Exist  err----", err)
 	//	return err
 	//}
-
+	fmt.Printf("执行删除后影响了%d行", ret.RowsAffected)
 	return nil
 }
 
@@ -136,7 +137,6 @@ func (r *AbcDao) Page(pb *ypage.PageBeanMap) (*ypage.PageBeanMap, error) {
 	//Find是查找所有的记录
 	db.Find(&abs, "1=1")
 	pb.RowsCount = int64(len(abs))
-	pb.RowsPerPage = 3
 	i := pb.RowsCount / pb.RowsPerPage
 	if i != 0 {
 		i += 1
@@ -154,5 +154,12 @@ func (r *AbcDao) List(name string) ([]*Abc, error) {
 	abs := make([]*Abc, 0)
 	//Find是查找所有的记录
 	db.Find(&abs, "name=?", name)
+	return abs, nil
+}
+func (r *AbcDao) ListAll() ([]*Abc, error) {
+	//查询所有记录
+	abs := make([]*Abc, 0)
+	//Find是查找所有的记录
+	db.Find(&abs)
 	return abs, nil
 }

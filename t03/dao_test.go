@@ -30,7 +30,8 @@ func init() {
 func Test_get(t *testing.T) {
 	//此处相当于service层
 	//根据id查找
-	abc, err := a.Get(15)
+	abc, err := a.Get1(15)
+
 	if err != nil {
 		log.Println(err)
 	}
@@ -74,7 +75,7 @@ func Test_list(t *testing.T) {
 func Test_insert(t *testing.T) {
 	//添加记录
 	bean := &Abc{
-		Id:   15,
+		Id:   122,
 		Name: "张三",
 		Age:  "13",
 	}
@@ -100,7 +101,7 @@ func Test_pg(t *testing.T) {
 	//data:=json.Unmarshal([]byte, &pb.Data)
 
 	for k, i := range data {
-		fmt.Printf("第 %d 条数据的id是 %dname是%sage %s 是\n", k+1, i.Id, i.Name, i.Age)
+		fmt.Printf("第 %d 条数据的id是 %d name是%s age是 %s \n", k+1, i.Id, i.Name, i.Age)
 	}
 	//r:=json.Unmarshal(pb.Data, &data)
 	println("查到的数据分别是", pb.Data)

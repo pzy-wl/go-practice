@@ -56,11 +56,11 @@ func (r *AbcDao) Get(id int64) (*Abc, error) {
 func (r *AbcDao) Get1(id int64) (*Abc, error) {
 	//通过id获取记录
 	//ypg.X.Save();
-	defer db.Close()
 	sqlStr := "select * from abcs where Id=$1"
 	//此函数返回值是啥?
 	//res:=db.Exec(sqlStr, id)
 	rows, err := db.DB().Query(sqlStr, id)
+	//rows, err:=ypg.X.DB().Query(sqlStr, id)  //不能将db换成ypg.X时已知报空指针
 	if err != nil {
 		fmt.Println(err)
 		panic(err)
@@ -80,10 +80,8 @@ func (r *AbcDao) Get1(id int64) (*Abc, error) {
 }
 func (r *AbcDao) Insert(bean *Abc) (int64, error) {
 	//ypg.X.Save();
-
-	defer db.Close()
 	//这个X是在哪定义的其内容?如何定义的内容?
-	//ypg.X.Save(bean)
+	//ret:=ypg.X.Save(bean)  //crud中的db全都不能用ypg.X进行代替
 	ret := db.Save(bean)
 	fmt.Printf("执行插入操作后,被影响%d行", ret.RowsAffected)
 	return 0, nil
@@ -96,6 +94,7 @@ func (r *AbcDao) GetAuto(id int64) (*Abc, error) {
 		func() (interface{}, error) {
 			//回调函数
 			log.Println("redis-get:", "Id")
+			println("从Redis获取失败,从pg中获取")
 			//如果在redis中获取失败,则转回常规方式(直接访问数据库)获取
 			return r.Get(id)
 		})
@@ -109,8 +108,6 @@ func (r *AbcDao) GetAuto(id int64) (*Abc, error) {
 func (r *AbcDao) Update(bean *Abc) error {
 	//通过bean来对数据进行更新
 	//ypg.X.Save();
-
-	defer db.Close()
 	db.Save(bean)
 	return nil
 }
@@ -118,8 +115,7 @@ func (r *AbcDao) Update(bean *Abc) error {
 func (r *AbcDao) Rm(id int64) error {
 	//ypg.X.Save();
 
-	defer db.Close()
-	bean := &Abc{Id: 13}
+	bean := &Abc{Id: id}
 	ret := db.Delete(bean)
 
 	//if err := ypg.DBErr(ret); err != nil {
@@ -132,7 +128,7 @@ func (r *AbcDao) Rm(id int64) error {
 
 func (r *AbcDao) Page(pb *ypage.PageBeanMap) (*ypage.PageBeanMap, error) {
 	//ypg.X.Save();
-	defer db.Close()
+
 	abs := make([]*Abc, 0)
 	//Find是查找所有的记录
 	db.Find(&abs, "1=1")

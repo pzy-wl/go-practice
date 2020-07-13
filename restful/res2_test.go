@@ -20,9 +20,6 @@ func Test_res2(t *testing.T) {
 	defer ret.Body.Close()
 
 	body, err := ioutil.ReadAll(ret.Body)
-	if err != nil {
-		panic(err)
-	}
 
 	var msg Message
 	err = json.Unmarshal(body, &msg)

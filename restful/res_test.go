@@ -1,4 +1,4 @@
-package others
+package restful
 
 import (
 	"encoding/json"
@@ -34,6 +34,7 @@ func getJson() ([]byte, error) {
 	detail := []Item{item1, item2}
 	m := Message{"IT", "KPI", time.Now().Unix(), detail}
 	return json.MarshalIndent(m, "", "")
+
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -44,7 +45,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, string(resp))
 }
 
-func Test_restful(t *testing.T) {
-	http.HandleFunc("/res", handler)
+func Test_res(t *testing.T) {
+	//充当服务端,来进行json的生成与返回
+	http.HandleFunc("/", handler)
 	http.ListenAndServe("localhost:8085", nil)
 }

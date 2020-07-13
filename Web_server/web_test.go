@@ -220,14 +220,22 @@ func updateAbc(w http.ResponseWriter, r *http.Request) {
 
 func delAbc(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "删除记录\n")
-	err := r.ParseForm()
-	if err != nil {
-		log.Fatal("parse form error ", err)
-	}
-	// 初始化请求变量结构 里面包含了json存储数据的各种可能
+	//第一种方式对request进行初始化
+	ret, err := ioutil.ReadAll(r.Body)
 	formData := make(map[string]int64)
-	// 调用json包的解析，解析请求body
-	_ = json.NewDecoder(r.Body).Decode(&formData)
+	err = json.Unmarshal(ret, &formData)
+	if err != nil {
+		panic(err)
+	}
+	//第二种方式进行初始化,多用于表单
+	//err := r.ParseForm()
+	//if err != nil {
+	//	log.Fatal("parse form error ", err)
+	//}
+	//// 初始化请求变量结构 里面包含了json存储数据的各种可能
+	//formData := make(map[string]int64)
+	//// 调用json包的解析，解析请求body
+	//_ = json.NewDecoder(r.Body).Decode(&formData)
 	for key, value := range formData {
 		log.Println("key:", key, " => value :", value)
 		println("测试输出---循环内")

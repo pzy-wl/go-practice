@@ -171,6 +171,7 @@ func Test_web1(t *testing.T) {
 	mux.HandleFunc("/listAll", listAll)
 	mux.HandleFunc("/cmd", crubTest)
 	mux.HandleFunc("/select", selectById)
+	mux.HandleFunc("/update", updateAbc)
 	mux.HandleFunc("/testJson", getJson)
 	mux.HandleFunc("/testJson2", getJson2)
 	mux.HandleFunc("/toShow", show)
@@ -189,6 +190,32 @@ func Test_web1(t *testing.T) {
 	}
 	log.Println("server exit!")
 
+}
+
+func updateAbc(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "更新记录\n")
+	err := r.ParseForm()
+	if err != nil {
+		log.Fatal("parse form error ", err)
+	}
+	// 初始化请求变量结构 里面包含了json存储数据的各种可能
+	formData := make(map[string]t03.Abc)
+	// 调用json包的解析，解析请求body
+	_ = json.NewDecoder(r.Body).Decode(&formData)
+	for key, value := range formData {
+		log.Println("key:", key, " => value :", value)
+		println("测试输出---循环内")
+		err := a.Update(&value)
+		if err != nil {
+			log.Println(err)
+		} else {
+			println("更新成功!")
+		}
+	}
+
+	// 返回json字符串给客户端
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(formData)
 }
 
 func delAbc(w http.ResponseWriter, r *http.Request) {
@@ -217,6 +244,7 @@ func delAbc(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewEncoder(w).Encode(formData)
 }
 func insertAbc(w http.ResponseWriter, r *http.Request) {
+	//主要针对用json作为参数的且已知类型的
 	fmt.Fprintf(w, "插入记录\n")
 	err := r.ParseForm()
 	if err != nil {

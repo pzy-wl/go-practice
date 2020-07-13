@@ -175,6 +175,7 @@ func Test_web1(t *testing.T) {
 	mux.HandleFunc("/testJson2", getJson2)
 	mux.HandleFunc("/toShow", show)
 	mux.HandleFunc("/insert", insertAbc)
+	mux.HandleFunc("/del", delAbc)
 	//设置监听的端口，开始监听
 	errInfo := server.ListenAndServe()
 	//与上面的功能相同
@@ -190,6 +191,31 @@ func Test_web1(t *testing.T) {
 
 }
 
+func delAbc(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "删除记录\n")
+	err := r.ParseForm()
+	if err != nil {
+		log.Fatal("parse form error ", err)
+	}
+	// 初始化请求变量结构 里面包含了json存储数据的各种可能
+	formData := make(map[string]int64)
+	// 调用json包的解析，解析请求body
+	_ = json.NewDecoder(r.Body).Decode(&formData)
+	for key, value := range formData {
+		log.Println("key:", key, " => value :", value)
+		println("测试输出---循环内")
+		err := a.Rm(value)
+		if err != nil {
+			log.Println(err)
+		} else {
+			println("删除成功!")
+		}
+	}
+
+	// 返回json字符串给客户端
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(formData)
+}
 func insertAbc(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "插入记录\n")
 	err := r.ParseForm()

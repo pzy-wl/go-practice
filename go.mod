@@ -10,8 +10,12 @@ require (
 	github.com/jinzhu/gorm v1.9.11
 	github.com/lib/pq v1.1.1
 	github.com/vhaoran/vchat v1.9.9
-	google.golang.org/genproto v0.0.0-20190404172233-64821d5d2107
+	google.golang.org/genproto v0.0.0-20190425155659-357c62f0e4bb
 	gopkg.in/gin-gonic/gin.v1 v1.3.0 // indirect
 	mellium.im/sasl v0.2.1 // indirect
 	xorm.io/core v0.7.2
 )
+
+replace github.com/vhaoran/vchat => ../vchat
+
+replace github.com/vhaoran/vchatintf => ../vchatintf

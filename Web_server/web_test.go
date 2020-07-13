@@ -6,8 +6,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
-	"os/signal"
 	"strings"
 	"testing"
 	"time"
@@ -17,8 +15,8 @@ import (
 
 var a = new(t03.AbcDao)
 
-func test(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "testing")
+func test(w http.ResponseWriter, _ *http.Request) {
+	_, _ = fmt.Fprintf(w, "testing")
 }
 func responseHello(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()       // 解析参数，默认是不会解析的
@@ -34,7 +32,7 @@ func responseHello(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello Golang!")
 }
 func crubTest(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()       // 解析参数，默认是不会解析的
+	_ = r.ParseForm()   // 解析参数，默认是不会解析的
 	fmt.Println(r.Form) // 这些信息是输出到服务器端的打印信息
 	fmt.Println("path", r.URL.Path)
 	fmt.Println("scheme", r.URL.Scheme)
@@ -47,7 +45,7 @@ func crubTest(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello Golang!")
 }
 func listAll(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "查询所有记录\n")
+	_, _ = fmt.Fprintf(w, "查询所有记录\n")
 	list, _ := a.ListAll()
 	for _, i := range list {
 		fmt.Fprintf(w, "id为%d的name为%s,年龄为%s\n", i.Id, i.Name, i.Age)
@@ -56,24 +54,25 @@ func listAll(w http.ResponseWriter, r *http.Request) {
 func selectById(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "根据id查找记录\n")
 	err := r.ParseForm()
-	//res, _:=ioutil.ReadAll(r.Body) // 解析参数，默认是不会解析的
-	//fmt.Println("______________",res)
-	//fmt.Println(string(res))
 	if err != nil {
 		log.Fatal("parse form error ", err)
 	}
 	// 初始化请求变量结构 里面包含了json存储数据的各种可能
-	formData := make(map[string]interface{})
+	formData := make(map[string]int64)
 	// 调用json包的解析，解析请求body
-	json.NewDecoder(r.Body).Decode(&formData)
+	_ = json.NewDecoder(r.Body).Decode(&formData)
 	for key, value := range formData {
 		log.Println("key:", key, " => value :", value)
+		println("测试输出---循环内")
+		ab, _ := a.Get(value)
+		fmt.Println("查询到的数据是:", ab)
 	}
+
 	// 返回json字符串给客户端
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(formData)
+	_ = json.NewEncoder(w).Encode(formData)
 }
-func getJson2(w http.ResponseWriter, r *http.Request) {
+func getJson2(_ http.ResponseWriter, r *http.Request) {
 	println("____________________进入getJson2________________")
 	jsonData, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -83,7 +82,7 @@ func getJson2(w http.ResponseWriter, r *http.Request) {
 	var formData map[string]interface{} //interface{}
 	//结果与map[string]interface()结果是一样的
 	// 调用json包的解析，解析请求body
-	json.Unmarshal(jsonData, &formData)
+	_ = json.Unmarshal(jsonData, &formData)
 	//fmt.Println(formData)
 	if err != nil {
 		fmt.Println(err)
@@ -141,7 +140,7 @@ func getJson(w http.ResponseWriter, r *http.Request) {
 	// 初始化请求变量结构
 	formData := make(map[string]interface{})
 	// 调用json包的解析，解析请求body
-	json.NewDecoder(r.Body).Decode(&formData)
+	_ = json.NewDecoder(r.Body).Decode(&formData)
 	for key, value := range formData {
 		log.Println("key:", key, " => value :", value)
 	}
@@ -155,22 +154,14 @@ func (_ *myHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func Test_web1(t *testing.T) {
-	//go1.8关闭服务器功能
-	quit := make(chan os.Signal)
-	signal.Notify(quit, os.Interrupt)
+
 	mux := http.NewServeMux()
 	server := &http.Server{
 		Addr:         ":8080",
 		WriteTimeout: 4 * time.Second,
 	}
 	server.Handler = mux
-	go func() {
 
-		<-quit
-		if err := server.Close(); err != nil {
-			log.Fatal("Close Server", err)
-		}
-	}()
 	//跟路由包含所有的未注册的路由
 	mux.Handle("/", &myHandler{})
 	//设置要解析的URL路由
@@ -182,6 +173,7 @@ func Test_web1(t *testing.T) {
 	mux.HandleFunc("/select", selectById)
 	mux.HandleFunc("/testJson", getJson)
 	mux.HandleFunc("/testJson2", getJson2)
+	mux.HandleFunc("/toShow", show)
 	//设置监听的端口，开始监听
 	errInfo := server.ListenAndServe()
 	//与上面的功能相同

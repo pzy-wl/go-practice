@@ -137,11 +137,14 @@ func (r *AbcDao) Page(pb *ypage.PageBeanMap) (*ypage.PageBeanMap, error) {
 	//Find是查找所有的记录
 	db.Find(&abs, "1=1")
 	pb.RowsCount = int64(len(abs))
+	//将查询到的数据封装成json存储  ---尚未成功
+	//pb.Data, _ =json.NewDecoder(strings.NewReader())
 	i := pb.RowsCount / pb.RowsPerPage
 	if i != 0 {
 		i += 1
 	}
 	pb.PagesCount = i
+	//将查到的数据作为类型数组存储
 	pb.Data = abs
 	pb.PageNo = 0
 

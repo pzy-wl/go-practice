@@ -93,10 +93,18 @@ func Test_pg(t *testing.T) {
 	}
 	println("当前数据总条数有:", pb.RowsCount, "条")
 	println("当前数据总页数:", pb.PagesCount, "页")
+
+	//类型数组的获取-----已知类型
 	data := pb.Data.([]*Abc)
+	//从json中获取数据
+	//data:=json.Unmarshal([]byte, &pb.Data)
+
 	for k, i := range data {
 		fmt.Printf("第 %d 条数据的id是 %dname是%sage %s 是\n", k+1, i.Id, i.Name, i.Age)
 	}
 	//r:=json.Unmarshal(pb.Data, &data)
 	println("查到的数据分别是", pb.Data)
+}
+func Test_jsontest(t *testing.T) {
+
 }

@@ -7,6 +7,7 @@ import (
 
 	"github.com/vhaoran/vchat/common/ypage"
 	"github.com/vhaoran/vchat/lib"
+	"github.com/vhaoran/vchat/lib/ypg"
 )
 
 var a = new(AbcDao)
@@ -19,12 +20,25 @@ func init() {
 		LoadRedis:        false,
 		LoadMongo:        false,
 		LoadMq:           false,
-		LoadRabbitMq:     true,
+		LoadRabbitMq:     false,
 		LoadJwt:          false,
 	})
 	if err != nil {
-		//panic(err.Error())
+		panic(err.Error())
 	}
+}
+
+func Test_pg_cnt(t *testing.T) {
+	bean := &Abc{
+		Name: "333",
+		Age:  "3333",
+	}
+	ypg.X.AutoMigrate(bean)
+
+	db := ypg.X.Save(bean)
+	fmt.Println("----", db.Error)
+	fmt.Println("-----", db.RowsAffected)
+	fmt.Println("-----", bean.Id)
 }
 
 func Test_get(t *testing.T) {

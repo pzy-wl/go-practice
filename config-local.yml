@@ -1,6 +1,6 @@
 microService:
   # 每一种服务不相同，同类的微服务相同
-  tag:  user
+  tag:  /user
   # 本地监听商品，docker中
   port: 9050
   # 本地监听主机，docker中
@@ -10,13 +10,14 @@ microService:
   # etct注册主机，docker映射到外部时使用
   regHost: 127.0.0.1
   # 所有微服務相同
-  dispatchUrl: ws://127.0.0.1:8888/ws
-  dispatchPwd: password
-
-ws:
-  port: 8888
-  httpSendPwd: password
-  wsSendPwd: password
+log:
+  logLevel: debug
+  # 日志路径
+  # logPath: "./"
+  # 文件名，不含路径
+  fileName: log
+  # 扩展名
+  ext: .log
 
 etcd:
   hosts:
@@ -30,7 +31,7 @@ etcd:
     username:      ""
     password:      ""
 postgres:
-  url:  "host=localhost user=postgres dbname=test sslmode=disable password=123456"
+  url:  "host=127.0.0.1 user=root dbname=test sslmode=disable password=password"
   poolMax: 100
   poolMin:  10
 redis:
@@ -62,13 +63,10 @@ mongo:
     serverSelectionTimeout: 5
 rabbitMq:
   url: amqp://root:password@127.0.0.1:5672/
-  poolMax: 100
+  poolMax: 20
   poolMin: 10
-es:
-  url:
-    - "http://localhost:9200"
 qiniu:
-  accessKey: "gEppSyXSFDnMfl_G5iG5p5"
-  secretKey: "EkZHv3orRsmK25dVWfSy_wDCOofjVD"
-  buckPermanent: "perma-wlkj"
-  buckTemp: "tempo-wlkj"
+  accessKey: "gEpp05gnISRQeLZ6d5GCnAryXSFDnMfl_G5iG5p5"
+  secretKey: "EkZHh2f3vLwVw2v3orRsmK25dVWfSy_wDCOofjVD"
+  buckPermanent: "permanent-wlkj"
+  buckTemp: "temporary-wlkj"

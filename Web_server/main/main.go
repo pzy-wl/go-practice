@@ -18,6 +18,7 @@ func sayHelloName(w http.ResponseWriter, r *http.Request) {
 	m := r.Form["data"]
 	fmt.Println(m)
 
+
 	fmt.Println(r.Form) // 这些信息是输出到服务器端的打印信息
 	fmt.Println("path", r.URL.Path)
 	fmt.Println("scheme", r.URL.Scheme)

@@ -34,3 +34,4 @@
     要求能使用CRUD,分面技术
  ## redis
     会用get/set
+以及了解Redis可以存储什么数据

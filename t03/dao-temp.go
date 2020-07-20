@@ -90,10 +90,10 @@ func (r *AbcDao) Insert(bean *Abc) (int64, error) {
 func (r *AbcDao) GetAuto(id int64) (*Abc, error) {
 	//查询数据,先在redis进行查询,若是查不到,则进入posegres,并且将查询到的结果写入redis
 	//把每个数据库表当做一个hashtable, 表明为key, 字段名为filed
-	v, err := yredis.CacheAutoGetH(new(Abc), "Id",
+	v, err := yredis.CacheAutoGetH(new(Abc), id,
 		func() (interface{}, error) {
 			//回调函数
-			log.Println("redis-get:", "Id")
+			log.Println("redis-get:", id)
 			println("从Redis获取失败,从pg中获取")
 			//如果在redis中获取失败,则转回常规方式(直接访问数据库)获取
 			return r.Get(id)

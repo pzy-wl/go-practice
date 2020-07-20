@@ -68,7 +68,7 @@ func Test_auto1(t *testing.T) {
 func Test_update(t *testing.T) {
 	bean1 := &Abc{
 		Id:   13,
-		Name: "李武",
+		Name: "李liu",
 		Age:  "13",
 	}
 	a.Update(bean1)

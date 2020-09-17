@@ -10,6 +10,7 @@ type (
 	}
 )
 
+
 func Call() {
 	//bean := new(ABC)
 	good()

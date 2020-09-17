@@ -28,17 +28,47 @@ func Test_int(t *testing.T) {
 
 func Test_string(t *testing.T) {
 	fmt.Println("-----------------")
-	go func() {
-		fmt.Println("hello")
-	}()
-	go func() {
-		fmt.Println("hello 2")
-	}()
-	go func() {
-		fmt.Println("hello  3")
-	}()
+	//t0:=time.Now()
+	//go func() {
+	//	fmt.Println("hello")
+	//}()
+	//go func() {
+	//	fmt.Println("hello 2")
+	//}()
+	//go func() {
+	//	fmt.Println("hello  3")
+	//}()
+	//fmt.Println(time.Since(t0))
+	//
+	////time.Sleep(time.Second * 3)
+	t0 := time.Now()
+	for i := 0; i < 10000; i++ {
+		go func(i int) {
+			fmt.Println("a", i)
+		}(i)
+	}
+	for i := 0; i < 10000; i++ {
+		go func(i int) {
+			fmt.Println("b", i)
+		}(i)
+	}
+	for i := 0; i < 10000; i++ {
+		go func(i int) {
+			fmt.Println("c", i)
+		}(i)
+	}
+	for i := 0; i < 10000; i++ {
+		go func(i int) {
+			fmt.Println("d", i)
+		}(i)
+	}
+	for i := 0; i < 10000; i++ {
+		go func(i int) {
+			fmt.Println("e", i)
+		}(i)
+	}
+	fmt.Print("此次测试用时:\n", time.Since(t0))
 
-	time.Sleep(time.Second * 3)
 }
 
 func Test_ykit(t *testing.T) {

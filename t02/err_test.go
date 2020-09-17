@@ -9,14 +9,13 @@ import (
 
 func Test_err_1(t *testing.T) {
 	//
-	i, err := strconv.ParseFloat("aaaa", 64)
-
-	//
+	s1 := "0.123456"
+	i, err := strconv.ParseFloat(s1, 64)
+	fmt.Println(err)
 	if err != nil {
 		fmt.Println("-----------------", i)
 		fmt.Println("-----------------", err)
 	}
-
 	s := err.Error()
 	fmt.Println("-----------------", s)
 }
@@ -26,7 +25,7 @@ func Test_panic(t *testing.T) {
 }
 
 func Test_defer(t *testing.T) {
-	err := f(5)
+	err := f(3)
 	if err != nil {
 		fmt.Println("err_test->", err)
 	}
@@ -54,6 +53,6 @@ func f(i int) (er1 error) {
 		fmt.Println("---defer-3--")
 	}()
 
-	fmt.Println("-----hellow------------")
+	fmt.Println("-----hello------------")
 	panic(" ************* error ")
 }

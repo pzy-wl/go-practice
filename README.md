@@ -1,12 +1,4 @@
 # go-practice
-以下工程可供參考
-  github.com/vhaoran/vchat.git 
-    該工程中有本地服務器配置參數
-    及redis/postgres/mongo/etcd/rabbitMQ/emq
-    的具體使用案例。
-  github.com/vhaoran/goStudy.git
-    这里有基本的go学习demo,及其它一些常见类库的使用
-
 # 主要练习内容
   ## 基础语法部分
      基本数据类型

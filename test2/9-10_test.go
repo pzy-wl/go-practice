@@ -98,6 +98,7 @@ func TestGetFileName(t *testing.T) {
 }
 
 func TestFileRename(t *testing.T) {
+	//对于某目录下的所有文件进行重命名
 	fileInfoList, err := ioutil.ReadDir("/Users/ccc/work/yicms/dao/img")
 	if err != nil {
 		log.Fatal(err)

@@ -1,7 +1,5 @@
-target/
-.git/
-a.txt/
-logs/
-*.test
 *.out
-.idea/
+*.idea/
+*.git
+target/
+logs/

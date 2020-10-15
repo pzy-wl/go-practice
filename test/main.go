@@ -14,10 +14,11 @@ type Client struct {
 	Jwt    string
 }
 
-func NewWebsocketClient(origin, url string) *Client {
+func NewWebsocketClient(origin, url, jwt string) *Client {
 	return &Client{
 		Origin: origin,
 		URL:    url,
+		Jwt:    jwt,
 	}
 }
 
@@ -26,8 +27,8 @@ func (c *Client) ReceiveMessage() {
 	if err != nil {
 		log.Println("cfg:", err)
 	}
-	//cfg.Header.Add("Jwt", c.Jwt)
-	//cfg.Header.Add("Sec-WebSocket-Protocol", "protoo")
+	cfg.Header.Add("Jwt", c.Jwt)
+	cfg.Header.Add("Sec-WebSocket-Protocol", "protoo")
 
 	ws, err := websocket.DialConfig(cfg)
 	if err != nil {
@@ -58,7 +59,7 @@ func (c *Client) ReceiveMessage() {
 }
 
 func (c *Client) SendMessage(user string, body string) {
-	url := "ws://0755yicai.com:8083/dispatch"
+	url := "ws://192.168.0.201:8083/dispatch"
 	cfg, err := websocket.NewConfig(url, c.Origin)
 	if err != nil {
 		log.Println("cfg:", err)
@@ -87,20 +88,19 @@ func (c *Client) SendMessage(user string, body string) {
 }
 
 func main() {
-	origin := "http://0755yicai.com:8083"
-	url := "ws://0755yicai.com:8083/ws"
-	whh := "?Jwt=test|109"
-	//lsd := "test/2"
-	admin := "?Jwt=test|6"
-	admin2 := "?Jwt=test|8"
-	admin3 := "?Jwt=test|7"
-	c := NewWebsocketClient(origin, url+whh)
+	origin := "http://192.168.0.201:8083"
+	url := "ws://192.168.0.201:8083/ws"
+	whh := "test/1"
+	lsd := "test/2"
+
+	c := NewWebsocketClient(origin, url, whh)
+	msg := "hello,I'm wanghuahua, I like golang!"
 	c.ReceiveMessage()
-	a := NewWebsocketClient(origin, url+admin)
-	a.ReceiveMessage()
-	a2 := NewWebsocketClient(origin, url+admin2)
-	a2.ReceiveMessage()
-	a3 := NewWebsocketClient(origin, url+admin3)
-	a3.ReceiveMessage()
+	c.SendMessage(whh, msg)
+
+	c2 := NewWebsocketClient(origin, url, lsd)
+	msg2 := "hi,I'm lishuandan, I hate golang!"
+	c2.ReceiveMessage()
+	c2.SendMessage(lsd, msg2)
 	select {}
 }

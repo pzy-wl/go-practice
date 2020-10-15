@@ -111,7 +111,19 @@ func TestFileRename(t *testing.T) {
 	}
 
 }
-
+func TestReName2(t *testing.T) {
+	//对于某目录下的所有右归路的文件名进行重命名 对于下载七牛云上的图片文件名错误进行补救
+	fileInfoList, err := ioutil.ReadDir("/Users/ccc/work/yicms/dao/img")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(len(fileInfoList))
+	for i := range fileInfoList {
+		//字符串切割完成后应该是一个数组,选取第一个
+		name := strings.Split(fileInfoList[i].Name(), "?")[0]
+		os.Rename("/Users/ccc/work/yicms/dao/img/"+fileInfoList[i].Name(), "/Users/ccc/work/yicms/dao/img/"+name)
+	}
+}
 func TestRame(t *testing.T) {
 	//单个文件重命名测试
 	path, err := os.Getwd()

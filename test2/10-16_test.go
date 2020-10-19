@@ -213,7 +213,7 @@ func TestBigInt(t *testing.T) {
 
 func fibonacci(n int) (res *big.Int) {
 	//使用big.Int 进行斐波那契数列高位的运算
-	//数组实现
+	//数组实现 因此必须先求出n前的所有的斐波那契数
 	if n <= 1 {
 		res = big.NewInt(1)
 	} else {

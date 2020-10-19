@@ -6,11 +6,15 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"log"
 	"os"
 	"runtime"
 	"testing"
 	"time"
+
+	"github.com/vhaoran/vchat/lib/ylog"
 )
 
 //Go语言常见坑
@@ -156,4 +160,165 @@ func TestBug8(t *testing.T) {
 		runtime.Gosched()
 	} // 占用CPU 1
 	//select {} //通过阻塞的方式避免CPU占用
+}
+
+//不同GoRoutine之间不满足顺序一致性内存模型
+var msg string
+var done bool
+
+func setup() {
+	msg = "hello, world"
+	done = true
+}
+func TestBug9(t *testing.T) {
+	//因为在不同的Goroutine之中,main函数无法保证打印出hello,world:
+	go setup()
+	for !done {
+	}
+	println(msg)
+}
+
+//解决的办法是显式同步
+var msg1 string
+var done1 = make(chan bool)
+
+func setup1() {
+	msg1 = "hello, world"
+	done1 <- true
+}
+
+func TestBug91(t *testing.T) {
+	go setup1()
+	<-done1
+	println(msg1)
+}
+
+//以下三个测试都有可能造成资源泄漏,因为都在for循环中调用了defer
+func TestBug10(t *testing.T) {
+	//	闭包错误引用同一变量-- 会在循环结束之后调用defer五次,因此输出结果全是5
+	for i := 0; i < 5; i++ {
+		defer func() {
+			println(i)
+		}()
+	}
+}
+
+func TestBug101(t *testing.T) {
+	//解决办法1:是每轮迭代生成一个局部变量
+	for i := 0; i < 5; i++ {
+		i := i
+		defer func() {
+			println(i)
+		}()
+	}
+}
+
+func TestBug102(t *testing.T) {
+	//	解决办法2:通过函数参数传入
+	for i := 0; i < 5; i++ {
+		defer func(i int) {
+			println(i)
+		}(i)
+	}
+}
+
+func TestDir(t *testing.T) {
+	//	获取本地路径
+	spath, err := os.Getwd()
+	if err != nil {
+		return
+	}
+	f, err := os.Create("2.txt")
+	if err != nil {
+		ylog.Debug("err is", err)
+	}
+	spath = spath + "/2.txt"
+	fmt.Println(spath)
+	_, err = f.WriteString("/Users/ccc/mydata/day3/go-practice/test2/1.txt")
+	if err != nil {
+		ylog.Debug("文件写入时出错", err)
+	}
+}
+
+//在循环内部执行defer
+func TestBug11(t *testing.T) {
+	//	defer在函数退出时才能执行,在for循环执行的defer会导致资源延迟释放:
+	//报错(too many open files in system) 的临界值
+	for i := 0; i < 7622; i++ {
+		f, err := os.Open("/Users/ccc/mydata/day3/go-practice/test2/1.txt")
+		if err != nil {
+			log.Fatal(err)
+		}
+		//可能导致资源泄漏,因为defer定义在for循环中了
+		defer f.Close()
+	}
+}
+
+func TestBug111(t *testing.T) {
+	//解决办法: 在for中构造一个局部函数,在局部函数内部执行defer
+	for i := 0; i < 5; i++ {
+		func() {
+			f, err := os.Open("/Users/ccc/mydata/day3/go-practice/test2/1.txt")
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer f.Close()
+		}()
+	}
+}
+
+func TestBug12(t *testing.T) {
+	//	Goroutine泄漏
+	//后台Goroutine向管道输入自然数队列,main函数中输出序列. 但是当break跳出for循环时,后台的Goroutine就处于无法被回收的状态了
+	ch := func() <-chan int {
+		ch := make(chan int)
+		go func() {
+			for i := 0; ; i++ {
+				ch <- i
+			}
+		}()
+		return ch
+	}()
+
+	for v := range ch {
+		fmt.Println(v)
+		if v == 5 {
+			break
+		}
+	}
+}
+
+func TestBug121(t *testing.T) {
+	//通过context包避免问题
+	//原理:当main 函数在break跳出循环时,cancel()来通知Goroutine退出,这样就避免了Goroutine泄漏
+	ctx, cancel := context.WithCancel(context.Background())
+
+	ch := func(ctx context.Context) <-chan int {
+		ch := make(chan int)
+		go func() {
+			for i := 0; ; i++ {
+				select {
+				// 如果main函数执行break,则告知此Goroutine
+				case <-ctx.Done():
+					return
+				case ch <- i:
+				}
+			}
+		}()
+		return ch
+	}(ctx)
+
+	for v := range ch {
+		fmt.Println(v)
+		if v == 5 {
+			//break 之前执行cancel来告知Goroutine
+			cancel()
+			break
+		}
+	}
+}
+
+func TestFun1(t *testing.T) {
+	//	三元表达式 go语言明确不支持
+
 }

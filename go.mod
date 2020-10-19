@@ -13,6 +13,7 @@ require (
 	github.com/vhaoran/go-practice v0.0.0-20200720062337-51835b1cf2c5
 	github.com/vhaoran/vchat v1.9.9
 	golang.org/x/net v0.0.0-20200927032502-5d4f70055728
+	gopl.io v0.0.0-20200323155855-65c318dde95e // indirect
 )
 
 replace github.com/vhaoran/vchat v1.9.9 => ../../../work/vchat

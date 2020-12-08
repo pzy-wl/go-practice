@@ -12,9 +12,13 @@ require (
 	github.com/lib/pq v1.8.0
 	github.com/vhaoran/go-practice v0.0.0-20200720062337-51835b1cf2c5
 	github.com/vhaoran/vchat v1.9.9
+	github.com/vhaoran/yiintf v0.0.0-20201202075015-3b1c41704035
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	golang.org/x/net v0.0.0-20200927032502-5d4f70055728
+	google.golang.org/grpc/examples v0.0.0-20201204235607-0d6a24f68a5f // indirect
 	gopl.io v0.0.0-20200323155855-65c318dde95e
 )
 
 replace github.com/vhaoran/vchat v1.9.9 => ../../../work/vchat
+// 处理etcd编译出错
+replace google.golang.org/grpc => google.golang.org/grpc v1.26.0

@@ -196,3 +196,12 @@ func TestSort(t *testing.T) {
 	sort.Sort(StringSlice(names))
 	ylog.DebugDump(names)
 }
+
+func TestErrInit(t *testing.T) {
+	err := errors.New("this is an error")
+	err1 := fmt.Errorf("%v, 请尽快处理", err)
+	ylog.Debug("拆掉一层后", errors.Unwrap(err1))
+	ylog.Error(err)
+	ylog.Error(err1)
+	ylog.Debug("拆掉一层后", errors.Unwrap(err))
+}

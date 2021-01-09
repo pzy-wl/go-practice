@@ -34,7 +34,6 @@ func Test3(t *testing.T) {
 func Test4(t *testing.T) {
 	//浮点数精度丢失问题 精度到达小数点后15位左右
 	a := 9.1
-	fmt.Sprint(a)
 	fmt.Printf("%f\n", a)
 	fmt.Printf("%.10f\n", a)
 	fmt.Printf("%.16f\n", a)
@@ -47,7 +46,6 @@ func Test5(t *testing.T) {
 	//再次证明浮点数的精度(float64)是小数点后15位
 	a := 0.3
 	b := 0.6
-	fmt.Sprint(a + b)
 	fmt.Printf("%f\n", a+b)
 	fmt.Printf("%.10f\n", a+b)
 	fmt.Printf("%.15f\n", a+b)

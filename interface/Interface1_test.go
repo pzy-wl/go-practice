@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io"
 	"math/rand"
+	"os"
 	"reflect"
 	"sort"
 	"testing"
@@ -204,4 +205,15 @@ func TestErrInit(t *testing.T) {
 	ylog.Error(err)
 	ylog.Error(err1)
 	ylog.Debug("拆掉一层后", errors.Unwrap(err))
+}
+
+func TestAssertions(t *testing.T) {
+	//断言
+	//一个类型断言检查它操作对象的动态类型是否和断言的类型匹配。
+	var w io.Writer
+	w = os.Stdout
+	f := w.(*os.File) // success: f == os.Stdout
+	fmt.Println(f.Name())
+	//c := w.(*bytes.Buffer) // panic: interface holds *os.File, not *bytes.Buffer
+	//fmt.Println(c)
 }

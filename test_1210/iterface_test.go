@@ -20,4 +20,5 @@ func Test1(t *testing.T) {
 	//w = nil
 	w.Write([]byte("hello pzy")) //will cause nil pointer dereference
 	fmt.Println(w)
+	fmt.Println("hello golang")
 }
